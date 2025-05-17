@@ -1,0 +1,97 @@
+<!-- Contenedor principal con fondo degradado -->
+<div class="auth-container">
+  <div class="login-wrapper">
+    
+    <!-- Tarjeta de login con efecto de elevación -->
+    <mat-card class="login-card">
+      <!-- Logo y encabezado -->
+      <div class="login-header">
+        <div class="logo-container">
+          <mat-icon class="logo-icon">admin_panel_settings</mat-icon>
+        </div>
+        <h1 class="welcome-title">Bienvenido</h1>
+        <p class="login-subtitle">Accede a tu cuenta para continuar</p>
+      </div>
+      
+      <!-- Formulario de login -->
+      <form class="login-form" [formGroup]="authForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Campo de email con animación -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput formControlName="email" type="email" autocomplete="email">
+          <mat-icon matSuffix>email</mat-icon>
+          @if (authForm.get('email')?.hasError('required') && authForm.get('email')?.touched) {
+            <mat-error>El correo electrónico es requerido</mat-error>
+          }
+          @if (authForm.get('email')?.hasError('email') && authForm.get('email')?.touched) {
+            <mat-error>Introduce un correo electrónico válido</mat-error>
+          }
+        </mat-form-field>
+        
+        <!-- Campo de contraseña con toggle de visibilidad -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" autocomplete="current-password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" type="button" aria-label="Toggle password visibility">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (authForm.get('password')?.hasError('required') && authForm.get('password')?.touched) {
+            <mat-error>La contraseña es requerida</mat-error>
+          }
+        </mat-form-field>
+        
+        <!-- Mensaje de error -->
+        @if (error) {
+          <div class="error-message">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{error}}</span>
+          </div>
+        }
+        
+        <!-- Botón de inicio de sesión con efecto de ondas -->
+        <button mat-flat-button color="primary" 
+                class="login-button" 
+                type="submit" 
+                [disabled]="!authForm.valid">
+          <span>Iniciar sesión</span>
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+        
+        <!-- Enlaces adicionales -->
+        <div class="additional-options">
+          <a routerLink="/authentication/forgot-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+      </form>
+      
+      <!-- Separador con texto -->
+      <div class="separator">
+        <span>o continúa con</span>
+      </div>
+      
+      <!-- Botones de redes sociales -->
+      <div class="social-login">
+        <button mat-stroked-button class="social-button google">
+          <img src="assets/images/google-icon.svg" alt="Google" class="social-icon">
+          Google
+        </button>
+        <button mat-stroked-button class="social-button microsoft">
+          <img src="assets/images/microsoft-icon.svg" alt="Microsoft" class="social-icon">
+          Microsoft
+        </button>
+      </div>
+      
+      <!-- Pie de página -->
+      <div class="login-footer">
+        <p>¿No tienes una cuenta? <a routerLink="/authentication/signup" class="signup-link">Regístrate</a></p>
+      </div>
+    </mat-card>
+    
+    <!-- Decoración visual -->
+    <div class="decoration-circles">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+  </div>
+</div>

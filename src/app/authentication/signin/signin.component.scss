@@ -1,0 +1,292 @@
+/* Estilos para la imagen de fondo en la sección izquierda */
+.left-img {
+    background-size: contain;    /* La imagen se ajusta manteniendo su proporción */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    width: 100%;               /* Ocupa el 100% del ancho del contenedor */
+    background-color: white;    /* Fondo blanco por defecto */
+    height: 100%;              /* Ocupa el 100% de la altura del contenedor */
+    margin-left: 80px;         /* Margen izquierdo para separación del borde */
+}
+
+/* Estilos para el contenedor principal de autenticación */
+.auth-container {
+    background-color: white;   /* Fondo blanco para todo el contenedor */
+}
+
+// Variables de colores
+$primary-color: #3f51b5;
+$primary-light: #7986cb;
+$secondary-color: #ff4081;
+$background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$card-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+$white: #ffffff;
+$light-gray: #f5f7fa;
+$text-color: #333333;
+$text-secondary: #6b7c93;
+$error-color: #f44336;
+
+// Estilos del contenedor principal
+.auth-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $background-gradient;
+  padding: 40px 20px;
+}
+
+// Wrapper del login
+.login-wrapper {
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+  z-index: 1;
+}
+
+// Tarjeta de login
+.login-card {
+  background-color: $white;
+  border-radius: 16px;
+  box-shadow: $card-shadow;
+  padding: 40px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+// Encabezado del login
+.login-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+// Contenedor del logo
+.logo-container {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $primary-light;
+  border-radius: 50%;
+}
+
+// Icono del logo
+.logo-icon {
+  font-size: 42px;
+  height: 42px;
+  width: 42px;
+  color: $white;
+}
+
+// Título de bienvenida
+.welcome-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: $text-color;
+  margin-bottom: 8px;
+}
+
+// Subtítulo del login
+.login-subtitle {
+  font-size: 16px;
+  color: $text-secondary;
+  margin-bottom: 0;
+}
+
+// Formulario de login
+.login-form {
+  margin-bottom: 32px;
+}
+
+// Campo de formulario
+.form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+// Mensaje de error
+.error-message {
+  background-color: rgba($error-color, 0.1);
+  border-radius: 8px;
+  color: $error-color;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 20px;
+  
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+// Botón de login
+.login-button {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  
+  span {
+    margin-right: 8px;
+  }
+  
+  &:hover:not([disabled]) {
+    transform: translateY(-2px);
+  }
+  
+  &:active:not([disabled]) {
+    transform: translateY(0);
+  }
+}
+
+// Opciones adicionales
+.additional-options {
+  text-align: center;
+  margin-top: 20px;
+}
+
+// Enlace de olvidé mi contraseña
+.forgot-password {
+  color: $primary-color;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+  
+  &:hover {
+    color: $secondary-color;
+    text-decoration: underline;
+  }
+}
+
+// Separador con texto
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 32px 0;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba($text-secondary, 0.2);
+  }
+  
+  span {
+    padding: 0 12px;
+    color: $text-secondary;
+    font-size: 14px;
+  }
+}
+
+// Botones de redes sociales
+.social-login {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+// Botón de red social
+.social-button {
+  flex: 1;
+  height: 44px;
+  font-size: 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba($text-secondary, 0.1);
+  transition: background-color 0.3s;
+  
+  .social-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+  
+  &:hover {
+    background-color: $light-gray;
+  }
+}
+
+// Pie de página
+.login-footer {
+  text-align: center;
+  font-size: 14px;
+  color: $text-secondary;
+  
+  .signup-link {
+    color: $primary-color;
+    font-weight: 500;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+      color: $secondary-color;
+    }
+  }
+}
+
+// Decoración con círculos
+.decoration-circles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+// Círculos decorativos
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+  
+  &.circle-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -100px;
+    opacity: 0.4;
+  }
+  
+  &.circle-2 {
+    width: 400px;
+    height: 400px;
+    bottom: -200px;
+    left: -200px;
+    opacity: 0.3;
+  }
+  
+  &.circle-3 {
+    width: 200px;
+    height: 200px;
+    bottom: 50px;
+    right: -100px;
+    opacity: 0.2;
+  }
+}
+
+// Responsive
+@media (max-width: 576px) {
+  .login-card {
+    padding: 30px 20px;
+  }
+  
+  .social-login {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

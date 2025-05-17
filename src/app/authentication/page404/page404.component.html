@@ -1,0 +1,41 @@
+<!-- Contenedor principal de autenticación/error -->
+<div class="auth-container">
+  <!-- Fila principal que contiene el contenido de autenticación/error -->
+  <div class="row auth-main">
+    
+    <!-- Columna que contiene el formulario/sección de error -->
+    <div class="col-sm-12 auth-form-section">
+      <!-- Sección del formulario -->
+      <div class="form-section">
+        <!-- Contenedor wrapper para el contenido de autenticación -->
+        <div class="auth-wrapper">
+          <!-- Formulario (en este caso usado para mostrar mensaje de error) -->
+          <form>
+            <!-- Encabezado del error - muestra el código de error (404) -->
+            <span class="error-header p-b-45">
+              404
+            </span>
+            
+            <!-- Subencabezado del error - mensaje principal -->
+            <span class="error-subheader p-b-5">
+              No tienes permiso para ver este módulo
+            </span>
+            
+            <!-- Segundo subencabezado - información adicional sobre los permisos -->
+            <span class="error-subheader2 p-b-5">
+              Solo para usuarios con rol de Administrador
+            </span>
+            
+            <!-- Contenedor del botón de acción -->
+            <div class="container-auth-form-btn mt-5">
+              <!-- Botón para redirigir al inicio -->
+              <button mat-flat-button color color="primary" class="auth-form-btn" type="submit" (click)="redirectHome()">
+                Volver al inicio
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
