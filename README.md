@@ -118,7 +118,4 @@ El backend estará disponible en `http://localhost:3000/`
 3. Asegurarse de que el código pase las pruebas de linting
 4. Crear una Pull Request con una descripción detallada del cambio
 
-## Licencia
-
-[Incluir información de licencia]
 
