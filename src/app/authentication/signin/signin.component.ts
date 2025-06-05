@@ -104,8 +104,6 @@ export class SigninComponent implements OnInit {
         next: (res) => {
           // Manejo de respuesta exitosa
           if (res?.token) {
-            // Almacena el token en sessionStorage
-            sessionStorage.setItem('accessToken', res.token);
             console.log('Token recibido:', res.token);
             
             // Establece el token en el servicio de autenticación

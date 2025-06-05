@@ -18,6 +18,7 @@ import { AuthService } from '@core';
 import { RouteInfo } from './sidebar.metadata';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -30,6 +31,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   imports: [
     NgScrollbar,
     MatButtonModule,
+    MatIconModule,
     RouterLink,
     MatTooltipModule,
     RouterLinkActive,
@@ -127,21 +129,23 @@ export class SidebarComponent extends UnsubscribeOnDestroyAdapter implements OnI
     }
   }
 
-  // Efectos hover
+  // Efectos hover - DISABLED to prevent sidebar movement
   mouseHover() {
-    const body = this._elementRef.nativeElement.closest('body');
-    if (body.classList.contains('submenu-closed')) {
-      this._renderer.addClass(this._document.body, 'side-closed-hover');
-      this._renderer.removeClass(this._document.body, 'submenu-closed');
-    }
+    // Disabled to prevent sidebar following mouse
+    // const body = this._elementRef.nativeElement.closest('body');
+    // if (body.classList.contains('submenu-closed')) {
+    //   this._renderer.addClass(this._document.body, 'side-closed-hover');
+    //   this._renderer.removeClass(this._document.body, 'submenu-closed');
+    // }
   }
 
   mouseOut() {
-    const body = this._elementRef.nativeElement.closest('body');
-    if (body.classList.contains('side-closed-hover')) {
-      this._renderer.removeClass(this._document.body, 'side-closed-hover');
-      this._renderer.addClass(this._document.body, 'submenu-closed');
-    }
+    // Disabled to prevent sidebar following mouse
+    // const body = this._elementRef.nativeElement.closest('body');
+    // if (body.classList.contains('side-closed-hover')) {
+    //   this._renderer.removeClass(this._document.body, 'side-closed-hover');
+    //   this._renderer.addClass(this._document.body, 'submenu-closed');
+    // }
   }
 
   // Helpers de validación

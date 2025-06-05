@@ -77,7 +77,28 @@ export class AuthService {
    * @param token Token JWT
    */
   setToken(token: string): void {
-    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('accessToken', token);
+    
+    // Decodificar el token y guardar información del usuario
+    try {
+      const decodedToken: any = jwt.jwtDecode(token);
+      const currentUser: User = {
+        id: decodedToken.id,
+        username: decodedToken.email,
+        password: '', // No guardamos la contraseña
+        firsName: decodedToken.nombre,
+        lastName: '',
+        token: token
+      };
+      
+      // Guardar usuario en sessionStorage
+      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+      
+      // Actualizar el BehaviorSubject
+      this.currentUserSubject.next(currentUser);
+    } catch (error) {
+      console.error('Error al decodificar token:', error);
+    }
   }
 
   /**
@@ -85,7 +106,7 @@ export class AuthService {
    * @returns Token JWT o null
    */
   getToken(): string | null {
-    return sessionStorage.getItem('token');
+    return sessionStorage.getItem('accessToken');
   }
 
   /**
@@ -121,7 +142,6 @@ export class AuthService {
    */
   logout(): void {
     // Eliminar todos los tokens almacenados
-    sessionStorage.removeItem('token');
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('currentUser');
     

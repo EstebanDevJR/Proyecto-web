@@ -1,0 +1,143 @@
+<!-- Header de la página -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="title-section">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">assignment</mat-icon>
+        Mis Proyectos
+      </h1>
+      <p class="page-description">
+        Visualiza los proyectos en los que estás participando
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Sección de filtros y búsqueda -->
+<div class="filters-section">
+  <mat-card class="filters-card">
+    <div class="filters-content">
+      <!-- Barra de búsqueda -->
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar proyectos</mat-label>
+        <input matInput 
+               [(ngModel)]="searchTerm"
+               (input)="applyFilter()"
+               placeholder="Nombre o descripción..."
+               maxlength="100">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Botón para limpiar filtros -->
+      <button mat-stroked-button 
+              *ngIf="searchTerm"
+              (click)="clearFilter()"
+              class="clear-filters-btn">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Sección de estadísticas -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>folder</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ totalProjects }}</span>
+          <span class="stat-label">Proyectos Asignados</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="content-section">
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando proyectos...</p>
+  </div>
+
+  <!-- Lista de proyectos -->
+  <div *ngIf="!isLoading && filteredProjects.length > 0" class="projects-grid">
+    <mat-card *ngFor="let project of filteredProjects; trackBy: trackByProjectId" 
+              class="project-card">
+      <!-- Header de la tarjeta -->
+      <mat-card-header class="project-header">
+        <div mat-card-avatar class="project-avatar">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <mat-card-title class="project-title">{{ project.nombre }}</mat-card-title>
+        <mat-card-subtitle class="project-subtitle">
+          Administrador: {{ project.administrador?.nombre || 'Sin asignar' }}
+        </mat-card-subtitle>
+        
+        <!-- Botón de ver detalles -->
+        <div class="card-actions">
+          <button mat-icon-button (click)="viewProject(project)" matTooltip="Ver detalles">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+
+      <!-- Contenido de la tarjeta -->
+      <mat-card-content class="project-content">
+        <p class="project-description">{{ project.descripcion }}</p>
+        
+        <!-- Información adicional -->
+        <div class="project-info">
+          <div class="info-item">
+            <mat-icon class="info-icon">event</mat-icon>
+            <span>{{ formatDate(project.fecha_creacion) }}</span>
+          </div>
+          
+          <div class="info-item">
+            <mat-icon class="info-icon">group</mat-icon>
+            <span>{{ project.usuarios?.length || 0 }} miembros</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Estado vacío - Sin proyectos asignados -->
+  <div *ngIf="!isLoading && filteredProjects.length === 0 && projects.length === 0" 
+       class="empty-state">
+    <div class="empty-content">
+      <mat-icon class="empty-icon">assignment_late</mat-icon>
+      <h2>No tienes proyectos asignados</h2>
+      <p>Aún no has sido asignado a ningún proyecto. Contacta con tu administrador para que te asigne a un proyecto.</p>
+    </div>
+  </div>
+
+  <!-- Estado vacío - Filtros sin resultados -->
+  <div *ngIf="!isLoading && filteredProjects.length === 0 && projects.length > 0" 
+       class="no-results-state">
+    <div class="no-results-content">
+      <mat-icon class="no-results-icon">search_off</mat-icon>
+      <h3>No se encontraron proyectos</h3>
+      <p>No hay proyectos que coincidan con el filtro aplicado.</p>
+      <button mat-stroked-button (click)="clearFilter()">
+        <mat-icon>clear</mat-icon>
+        Limpiar Filtro
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Paginación -->
+<div *ngIf="!isLoading && filteredProjects.length > 0" class="pagination-section">
+  <mat-paginator [length]="totalProjects"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="[5, 10, 25, 50]"
+                 (page)="onPageChange($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+</div> 

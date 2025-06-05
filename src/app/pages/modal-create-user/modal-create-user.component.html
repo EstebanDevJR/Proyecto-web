@@ -73,10 +73,10 @@
               </mat-form-field>
             </div>
             
-            <!-- Campo Administrador (solo visible para ciertos roles) -->
+            <!-- Campo Administrador -->
             <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="showFieldAdministrator">
               <mat-form-field class="w-100" appearance="outline">
-                <mat-label>Administrador</mat-label>
+                <mat-label>Administrador Responsable</mat-label>
                 <mat-select formControlName="administrador_id" required>
                   <mat-option value="">Seleccionar</mat-option>
                   @for (item of administratorsValue; track $index) {
@@ -84,7 +84,7 @@
                   }
                 </mat-select>
                 @if (formCreateUser.get('administrador_id')?.hasError('required')) {
-                  <mat-error>Administrador es requerido</mat-error>
+                  <mat-error>Administrador responsable es requerido</mat-error>
                 }
               </mat-form-field>
             </div>

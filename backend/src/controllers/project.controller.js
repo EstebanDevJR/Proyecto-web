@@ -15,7 +15,7 @@ exports.updateProject = async (req , res ) => {
     const { data } = req.body;
     try{
         const updatedProject = await projectService.updateProject(id, data);
-        res.status(200).json({message : 'Proyecto actualizado con éxito', project});
+        res.status(200).json({message : 'Proyecto actualizado con éxito', proyecto: updatedProject});
     }catch (err) {
         res.status(500).json({message: err.message});
     }
@@ -52,8 +52,8 @@ exports.getAllProjects = async (req, res) => {
 
 exports.getProjectsByUserId = async (req, res) => {
     try {
-        const { userid } = req.params;
-        const projects = await projectService.getProjectsByUserId(userid);
+        const { id } = req.params;
+        const projects = await projectService.getProjectsByUserId(id);
         return res.status(200).json({ message: 'Proyectos obtenidos con éxito.', proyectos: projects });
     } catch (err) {
         return res.status(500).json({ error: err.message });

@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -33,6 +35,8 @@ import { ModalEditUsersComponent } from 'app/pages/modal-edit-users/modal-edit-u
     MatDatepickerModule,
     MatInputModule,
     MatTooltipModule,
+    MatCardModule,
+    MatChipsModule,
     ReactiveFormsModule,
     MatSnackBarModule,
     MatAutocompleteModule,
@@ -47,7 +51,7 @@ import { ModalEditUsersComponent } from 'app/pages/modal-edit-users/modal-edit-u
 })
 export class UsersComponent {
   // Columnas a mostrar en la tabla
-  displayedColumns: string[] = ['name', 'email', 'role', 'action'];
+  displayedColumns: string[] = ['id', 'name', 'email', 'role', 'status', 'action'];
 
   // Configuración del breadcrumb
   breadscrums = [
@@ -114,6 +118,19 @@ export class UsersComponent {
       case 1: return 'Administrador';
       case 2: return 'Usuario';
       default: return 'Desconocido';
+    }
+  }
+
+  /**
+   * Obtiene información del estado/relación del usuario
+   * @param user Usuario
+   * @returns Información de estado
+   */
+  getUserStatus(user: any): string {
+    if (user.rol_id === 1) {
+      return 'Administrador';
+    } else {
+      return user.administrador_id ? `Asignado al Admin ${user.administrador_id}` : 'Usuario Libre';
     }
   }
 

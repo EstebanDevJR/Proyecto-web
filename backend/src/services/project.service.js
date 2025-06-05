@@ -6,7 +6,9 @@ const ROLES = require('../utils/constants');
 exports.createProject = async (data) => {
             try{
                 const newProject = await Project.create({
-                    data
+                    nombre: data.nombre,
+                    descripcion: data.descripcion,
+                    administrador_id: data.administrador_id
                 });
                 return newProject;
             }catch (err) {
@@ -14,11 +16,15 @@ exports.createProject = async (data) => {
             }
 };
 
-exports.updateProject = async (data) => {
-    const project = await Project.findByPk(data.projectId);
+exports.updateProject = async (id, data) => {
+    const project = await Project.findByPk(id);
     if (!project) throw new Error('Proyecto no encontrado');
 
-    await project.update(data);
+    await project.update({
+        nombre: data.nombre,
+        descripcion: data.descripcion,
+        administrador_id: data.administrador_id
+    });
     return project;
 };
 
@@ -33,6 +39,11 @@ exports.deleteProject = async (id) => {
 exports.getProject = async (id) => {
     const project = await Project.findByPk(id, {
         include: [
+            {
+                model: User,
+                as: 'administrador',
+                attributes: ['id', 'nombre']
+            },
             {
                 model: User,
                 as: 'usuarios',
@@ -66,7 +77,7 @@ exports.getAllProjects = async () => {
 
         return projects;
     } catch (err) {
-        throw new Error("Error al obtener los proyectos: ${err.message}");
+        throw new Error(`Error al obtener los proyectos: ${err.message}`);
     }
 };
 
@@ -76,14 +87,42 @@ exports.getProjectsByUserId = async (userId) => {
             include: [
                 {
                     model: User,
+                    as: 'administrador',
+                    attributes: ['id', 'nombre']
+                },
+                {
+                    model: User,
                     as: 'usuarios',
                     where: { id: userId },
-                    attributes: ['id', 'nombre', 'email'],
+                    attributes: [],
                     through: { attributes: [] }
                 }
             ]
         });
-        return projects;
+
+        // Ahora obtenemos todos los datos completos de cada proyecto
+        const projectsWithAllUsers = await Promise.all(
+            projects.map(async (project) => {
+                const fullProject = await Project.findByPk(project.id, {
+                    include: [
+                        {
+                            model: User,
+                            as: 'administrador',
+                            attributes: ['id', 'nombre']
+                        },
+                        {
+                            model: User,
+                            as: 'usuarios',
+                            attributes: ['id', 'nombre', 'email'],
+                            through: { attributes: [] }
+                        }
+                    ]
+                });
+                return fullProject;
+            })
+        );
+
+        return projectsWithAllUsers;
     } catch (err) {
         throw new Error(`Error al obtener los proyectos del usuario: ${err.message}`);
     }
@@ -99,6 +138,11 @@ exports.assignUsersToProject = async (data) => {
     await project.addUsuarios(users);
     return await Project.findByPk(data.projectId, {
         include: [
+            {
+                model: User,
+                as: 'administrador',
+                attributes: ['id', 'nombre']
+            },
             {
                 model: User,
                 as: 'usuarios',

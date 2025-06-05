@@ -68,6 +68,7 @@ export class ModalCreateUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllAdministrator(); // Carga los administradores al iniciar
+    this.showAdministratorField(); // Siempre mostrar el campo de administrador
   }
   
   /**
@@ -106,11 +107,8 @@ export class ModalCreateUserComponent implements OnInit {
    * @param event Evento de cambio
    */
   onChangeRole(event: any) {
-    if (event.value === '1') { // Si el rol es administrador
-      this.hideAdministratorField();
-    } else { // Para otros roles
-      this.showAdministratorField();
-    }
+    // Todos los usuarios (incluyendo administradores) necesitan un administrador padre
+    this.showAdministratorField();
   }
 
   /**
@@ -121,14 +119,25 @@ export class ModalCreateUserComponent implements OnInit {
       Swal.fire('Error', 'Por favor completa todos los campos requeridos', 'error');
       return;
     }
+
+    // Validar que las contraseñas coincidan
+    const password = this.formCreateUser.get('password')?.value;
+    const confirmPassword = this.formCreateUser.get('confirmPassword')?.value;
+    if (password !== confirmPassword) {
+      Swal.fire('Error', 'Las contraseñas no coinciden', 'error');
+      return;
+    }
     
+    const rolId = Number(this.formCreateUser.get('rol_id')?.value);
     const userData = {
       nombre: this.formCreateUser.get('nombre')?.value,
       email: this.formCreateUser.get('email')?.value,
       password: this.formCreateUser.get('password')?.value,
-      rol_id: Number(this.formCreateUser.get('rol_id')?.value),
+      rol_id: rolId,
       administrador_id: this.formCreateUser.get('administrador_id')?.value
     };
+    
+
     
     this._userService.createUser(userData).subscribe({
       next: (response) => {

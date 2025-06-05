@@ -1,121 +1,184 @@
-<section class="content">
-    <div class="content-block">
-        <!-- Breadcrumb dinámico -->
-        @for (breadscrum of breadscrums; track breadscrums) {
-            <div class="block-header">
-                <app-breadcrumb [title]="breadscrum.title" 
-                              [items]="breadscrum.item" 
-                              [active_item]="breadscrum.active">
-                </app-breadcrumb>
-            </div>
-        }
-        
-        <div class="row-clearfix">
-            <div class="card-search">
-                <div class="card col-md-12">
-                    <div class="body">
-                        <!-- Formulario de búsqueda -->
-                        <form [formGroup]="userFormSearchFilter" class="row col-md-12 col-lg-12">
-                            <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 mb-3">
-                                <mat-form-field class="w-100" appearance="outline">
-                                    <mat-label>Nombre</mat-label>
-                                    <input matInput formControlName="name">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 mb-3 d-flex align-items-center">
-                                <mat-form-field class="w-100" appearance="outline">
-                                    <mat-label>Correo Electrónico</mat-label>
-                                    <input matInput formControlName="email">
-                                </mat-form-field>
-                            </div>
-                        </form>
-
-                        <!-- Encabezado de la tabla -->
-                        <div class="materialTableHeader">
-                            <div class="left">
-                                <ul class="header-button-left- ms-0">
-                                    <li class="tbl-title">
-                                        <h2>Lista usuarios</h2>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="right">
-                                <ul class="tbl-export-btn">
-                                    <li>
-                                        <button mat-flat-button color="primary" 
-                                                (click)="openModalCreateUser()">
-                                          Crear usuario
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Tabla de usuarios -->
-                        <div class="table-responsive">
-                            <table mat-table [dataSource]="dataSource" class="w-100">
-                                <!-- Spinner de carga -->
-                                <mat-spinner *ngIf="isLoading" class="loading-spinner"></mat-spinner>
-                                
-                                <!-- Columnas de la tabla -->
-                                <ng-container matColumnDef="id">
-                                    <th mat-header-cell *matHeaderCellDef width="25%"> ID </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-                                </ng-container>
-                                
-                                <ng-container matColumnDef="name">
-                                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
-                                </ng-container>
-                                
-                                <ng-container matColumnDef="email">
-                                    <th mat-header-cell *matHeaderCellDef> Correo Electrónico </th>
-                                    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-                                </ng-container>
-                                
-                                <ng-container matColumnDef="role">
-                                    <th mat-header-cell *matHeaderCellDef width="25%"> Rol </th>
-                                    <td mat-cell *matCellDef="let element"> 
-                                      {{ getRoleName(element.rol_id) }} 
-                                    </td>
-                                </ng-container>
-                                
-                                <ng-container matColumnDef="action">
-                                    <th mat-header-cell *matHeaderCellDef width="10%"> Acciones </th>
-                                    <td mat-cell *matCellDef="let element">
-                                        <button mat-icon-button 
-                                                matTooltip="Editar usuario" 
-                                                (click)="openModalUpdateUsers(element)">
-                                            <mat-icon> edit </mat-icon>
-                                        </button>
-                                        <button mat-icon-button 
-                                                matTooltip="Eliminar usuario" 
-                                                (click)="deleteUser(element.id)">
-                                            <mat-icon> delete </mat-icon>
-                                        </button>
-                                    </td>
-                                </ng-container>
-                                
-                                <!-- Filas de la tabla -->
-                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                            </table>
-                            
-                            <!-- Mensaje cuando no hay datos -->
-                            <div *ngIf="dataSource && dataSource.data && dataSource.data.length === 0" 
-                                 class="no-data-message">
-                                No hay información disponible.
-                            </div>
-
-                            <!-- Paginación -->
-                            <mat-paginator [pageSize]="5" 
-                                          showFirstLastButtons 
-                                          [pageSizeOptions]="[5, 10, 15]">
-                            </mat-paginator>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="users-page">
+<!-- Header de la página -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="title-section">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">people</mat-icon>
+        Gestión de Usuarios
+      </h1>
+      <p class="page-description">
+        Administra usuarios y colaboradores del sistema
+      </p>
     </div>
-</section>
+    
+    <div class="actions-section">
+      <button mat-raised-button 
+              color="primary" 
+              (click)="openModalCreateUser()"
+              class="create-button">
+        <mat-icon>person_add</mat-icon>
+        Nuevo Usuario
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sección de filtros y búsqueda -->
+<div class="filters-section">
+  <mat-card class="filters-card">
+    <div class="filters-content">
+      <!-- Barra de búsqueda por nombre -->
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar por nombre</mat-label>
+        <input matInput 
+               formControlName="name"
+               placeholder="Nombre del usuario..."
+               maxlength="100">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Búsqueda por email -->
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar por email</mat-label>
+        <input matInput 
+               formControlName="email"
+               placeholder="Correo electrónico..."
+               maxlength="100">
+        <mat-icon matSuffix>email</mat-icon>
+      </mat-form-field>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Contenido principal -->
+<div class="content-section">
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div *ngIf="!isLoading" class="table-container">
+    <mat-card class="table-card">
+      <mat-card-header class="table-header">
+        <mat-card-title>
+          <div class="header-info">
+            <h3>Lista de Usuarios</h3>
+            <p>Usuarios creados por ti y otros administradores del sistema</p>
+          </div>
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content class="table-content">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="dataSource" class="users-table">
+            <!-- Columna ID -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef class="id-column">ID</th>
+              <td mat-cell *matCellDef="let element" class="id-cell">{{element.id}}</td>
+            </ng-container>
+            
+            <!-- Columna Nombre -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let element" class="name-cell">
+                <div class="user-info">
+                  <div class="user-avatar">
+                    <mat-icon>person</mat-icon>
+                  </div>
+                  <span class="user-name">{{element.nombre}}</span>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Columna Email -->
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Correo Electrónico</th>
+              <td mat-cell *matCellDef="let element" class="email-cell">
+                <div class="email-info">
+                  <mat-icon class="email-icon">email</mat-icon>
+                  <span>{{element.email}}</span>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Columna Rol -->
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef>Rol</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-chip [class]="element.rol_id === 1 ? 'admin-chip' : 'user-chip'">
+                  <mat-icon matChipAvatar>{{ element.rol_id === 1 ? 'admin_panel_settings' : 'person' }}</mat-icon>
+                  {{ getRoleName(element.rol_id) }}
+                </mat-chip>
+              </td>
+            </ng-container>
+            
+            <!-- Columna Estado -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="status-badge" [ngClass]="{'admin-badge': element.rol_id === 1, 'user-badge': element.rol_id === 2}">
+                  {{ getUserStatus(element) }}
+                </span>
+              </td>
+            </ng-container>
+            
+            <!-- Columna Acciones -->
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef class="actions-column">Acciones</th>
+              <td mat-cell *matCellDef="let element" class="actions-cell">
+                <div class="action-buttons">
+                  <button mat-icon-button 
+                          matTooltip="Editar usuario" 
+                          (click)="openModalUpdateUsers(element)"
+                          class="edit-btn">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button 
+                          matTooltip="Eliminar usuario" 
+                          (click)="deleteUser(element.id)"
+                          class="delete-btn">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+            
+            <!-- Filas de la tabla -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+          </table>
+          
+          <!-- Mensaje cuando no hay datos -->
+          <div *ngIf="dataSource && dataSource.data && dataSource.data.length === 0" 
+               class="empty-state">
+            <div class="empty-content">
+              <mat-icon class="empty-icon">people_outline</mat-icon>
+              <h3>No hay usuarios</h3>
+              <p>Aún no se han creado usuarios. ¡Comienza creando el primer usuario!</p>
+              <button mat-raised-button 
+                      color="primary" 
+                      (click)="openModalCreateUser()"
+                      class="empty-action">
+                <mat-icon>person_add</mat-icon>
+                Crear Primer Usuario
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination-section">
+          <mat-paginator [pageSize]="5" 
+                        showFirstLastButtons 
+                        [pageSizeOptions]="[5, 10, 15, 20]">
+          </mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+</div> <!-- Cierre del contenedor users-page -->

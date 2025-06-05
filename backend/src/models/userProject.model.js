@@ -13,7 +13,7 @@ const UserProject = sequelize.define('user_projects', {
         autoIncrement: true
     },
     // ID del usuario: entero, no puede ser nulo, referencia a la tabla usuarios
-    user_id: {
+    usuario_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -29,32 +29,22 @@ const UserProject = sequelize.define('user_projects', {
             model: Project,
             key: 'id'
         }
-    },
-    // Rol del usuario en el proyecto: puede ser 'miembro' o 'lider'
-    rol: {
-        type: DataTypes.ENUM('miembro', 'lider'),
-        allowNull: false,
-        defaultValue: 'miembro'
-    },
-    // Fecha de asignación al proyecto: fecha y hora, no puede ser nulo
-    fecha_asignacion: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
     }
+    // Comentado: campos que no existen en la tabla real
+    // rol: {
+    //     type: DataTypes.ENUM('miembro', 'lider'),
+    //     allowNull: false,
+    //     defaultValue: 'miembro'
+    // },
+    // fecha_asignacion: {
+    //     type: DataTypes.DATE,
+    //     allowNull: false,
+    //     defaultValue: DataTypes.NOW
+    // }
 }, {
     // Configuraciones adicionales del modelo
     timestamps: false,  // Desactiva los campos createdAt y updatedAt
-    tableName: 'usuarios_proyectos',  // Nombre de la tabla en la base de datos
-    hooks: {
-        // Hook que se ejecuta después de crear una asignación
-        afterCreate: (userProject, options) => {
-            // Ajusta la hora para la zona horaria local (-5 horas)
-            if(userProject.fecha_asignacion) {
-                userProject.fecha_asignacion.setHours(userProject.fecha_asignacion.getHours() - 5);
-            }
-        }
-    }
+    tableName: 'usuarios_proyectos'  // Nombre de la tabla en la base de datos
 });
 
 // Exportación del modelo

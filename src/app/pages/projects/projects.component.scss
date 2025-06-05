@@ -1,0 +1,578 @@
+// Estilos principales para la gestión de proyectos
+
+// Contenedor principal de la página
+.projects-page {
+  min-height: calc(100vh - 64px);
+  padding: 2rem;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+// Header de la página
+.page-header {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: white;
+  padding: 2rem;
+  margin: -2rem -2rem 2rem -2rem; // Extend to edges of page container
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .title-section {
+    flex: 1;
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      font-weight: 600;
+
+      .title-icon {
+        font-size: 3rem;
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    .page-description {
+      margin: 0;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+  }
+
+  .actions-section {
+    .create-button {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+// Sección de filtros
+.filters-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+
+  .filters-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border: none;
+
+    .filters-content {
+      display: flex;
+      gap: 1.5rem;
+      align-items: end;
+      padding: 1.5rem;
+      flex-wrap: wrap;
+
+      .search-field {
+        flex: 2;
+        min-width: 250px;
+      }
+
+      .filter-field {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .clear-filters-btn {
+        height: 56px;
+        padding: 0 1.5rem;
+        color: #666;
+        border-color: #e0e0e0;
+
+        &:hover:not(:disabled) {
+          background-color: rgba(244, 67, 54, 0.04);
+          border-color: #f44336;
+          color: #f44336;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}
+
+// Sección de estadísticas
+.stats-section {
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+
+    .stat-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      &.total {
+        background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        color: white;
+      }
+
+      &.active {
+        background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+        color: white;
+      }
+
+      &.users {
+        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        color: white;
+      }
+
+      .stat-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+
+        .stat-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 50px;
+          height: 50px;
+          background-color: rgba(255, 255, 255, 0.15);
+          border-radius: 12px;
+
+          mat-icon {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+
+        .stat-info {
+          display: flex;
+          flex-direction: column;
+
+          .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+          }
+
+          .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Contenido principal
+.content-section {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // Estado de carga
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(25, 118, 210, 0.1) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(25, 118, 210, 0.1);
+
+    p {
+      margin: 0;
+      color: #1976d2;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    mat-spinner {
+      ::ng-deep circle {
+        stroke: #1976d2;
+      }
+    }
+  }
+
+  // Grid de proyectos
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+
+    .project-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        border-color: #1976d2;
+      }
+
+      // Header de la tarjeta
+      .project-header {
+        position: relative;
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 1px solid #e0e0e0;
+
+        .project-avatar {
+          background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+          color: white;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+
+          mat-icon {
+            font-size: 24px;
+          }
+        }
+
+        .project-title {
+          color: #333;
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          line-height: 1.3;
+        }
+
+        .project-subtitle {
+          color: #666;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .card-actions {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+
+          button {
+            color: #666;
+
+            &:hover {
+              color: #1976d2;
+              background-color: rgba(25, 118, 210, 0.04);
+            }
+          }
+        }
+      }
+
+      // Contenido de la tarjeta
+      .project-content {
+        padding: 1.5rem;
+
+        .project-description {
+          color: #555;
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .project-info {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+
+          .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+
+            .info-icon {
+              font-size: 18px;
+              color: #1976d2;
+            }
+          }
+        }
+
+        .users-section {
+          .users-title {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+          }
+
+          .users-list {
+            .users-chips {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 0.5rem;
+
+              .user-chip {
+                background-color: rgba(25, 118, 210, 0.1);
+                color: #1976d2;
+                font-size: 0.8rem;
+                border-radius: 16px;
+                height: 32px;
+                font-weight: 500;
+
+                mat-icon {
+                  font-size: 16px;
+                }
+              }
+
+              .more-users-chip {
+                background-color: rgba(102, 102, 102, 0.1);
+                color: #666;
+                font-size: 0.8rem;
+                border-radius: 16px;
+                height: 32px;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+
+      // Acciones de la tarjeta
+      .project-actions {
+        padding: 1rem 1.5rem;
+        background-color: #fafafa;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        gap: 0.75rem;
+
+        button {
+          flex: 1;
+          font-weight: 500;
+          transition: all 0.2s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+          }
+
+          mat-icon {
+            margin-right: 0.5rem;
+            font-size: 18px;
+          }
+        }
+      }
+    }
+  }
+
+  // Estados vacíos
+  .empty-state,
+  .no-results-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    padding: 2rem;
+
+    .empty-content,
+    .no-results-content {
+      text-align: center;
+      max-width: 400px;
+
+      .empty-icon,
+      .no-results-icon {
+        font-size: 4rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+      }
+
+      h2, h3 {
+        color: #666;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      p {
+        color: #999;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .empty-action {
+        background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+        color: white;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Paginación
+.pagination-section {
+  max-width: 1200px;
+  margin: 2rem auto 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: center;
+
+  mat-paginator {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .page-header {
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    .title-section .page-title {
+      font-size: 2rem;
+      .title-icon {
+        font-size: 2.5rem;
+      }
+    }
+  }
+
+  .filters-section .filters-card .filters-content {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-field,
+    .filter-field {
+      flex: none;
+      min-width: auto;
+    }
+
+    .clear-filters-btn {
+      height: 48px;
+    }
+  }
+
+  .stats-section .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-section .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    padding: 1.5rem 0;
+
+    .header-content {
+      padding: 0 1rem;
+    }
+  }
+
+  .filters-section,
+  .stats-section,
+  .content-section,
+  .pagination-section {
+    padding: 0 1rem;
+  }
+
+  .content-section .project-card {
+    .project-actions {
+      flex-direction: column;
+
+      button {
+        flex: none;
+      }
+    }
+  }
+}
+
+// Animaciones
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.projects-grid .project-card {
+  animation: slideInUp 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.projects-grid .project-card:nth-child(1) { animation-delay: 0.1s; }
+.projects-grid .project-card:nth-child(2) { animation-delay: 0.2s; }
+.projects-grid .project-card:nth-child(3) { animation-delay: 0.3s; }
+.projects-grid .project-card:nth-child(4) { animation-delay: 0.4s; }
+.projects-grid .project-card:nth-child(5) { animation-delay: 0.5s; }
+.projects-grid .project-card:nth-child(6) { animation-delay: 0.6s; }
+
+// Mejorar accesibilidad
+.project-card:focus-within {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+// Estilos para el menú de acciones
+::ng-deep .mat-mdc-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  .delete-action {
+    color: #f44336;
+
+    &:hover {
+      background-color: rgba(244, 67, 54, 0.04);
+    }
+  }
+}

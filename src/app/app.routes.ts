@@ -15,12 +15,13 @@ export const APP_ROUTE: Route[] = [
         loadChildren: () => // Carga diferida del módulo dashboard
           import('./dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTE),
       },
-    ],
-  },
   {
     path: 'page', // Ruta para páginas
+        canActivate: [AuthGuard], // Agregar AuthGuard también aquí
     loadChildren: () => // Carga diferida del módulo de páginas
       import('./pages/pages.routes').then((m) => m.PAGES_ROUTE),
+      },
+    ],
   },
   {
     path: 'authentication', // Ruta para autenticación

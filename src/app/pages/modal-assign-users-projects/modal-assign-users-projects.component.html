@@ -1,1 +1,187 @@
-<p>modal-assign-users-projects works!</p>
+<div class="modal-header">
+  <h2 mat-dialog-title class="modal-title">
+    <mat-icon class="header-icon">group_add</mat-icon>
+    Asignar Usuarios al Proyecto
+  </h2>
+  <button mat-icon-button mat-dialog-close class="close-button">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="modal-content">
+  <!-- Información del proyecto -->
+  <div class="project-info-section">
+    <mat-card class="project-info-card">
+      <mat-card-header>
+        <div mat-card-avatar class="project-avatar">
+          <mat-icon>folder_open</mat-icon>
+        </div>
+        <mat-card-title>{{ data.project.nombre }}</mat-card-title>
+        <mat-card-subtitle>{{ data.project.descripcion }}</mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+  <!-- Sección de búsqueda y filtros -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar usuarios</mat-label>
+      <input matInput 
+             [(ngModel)]="searchTerm"
+             (input)="filterUsers()"
+             placeholder="Nombre o email..."
+             maxlength="100">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Filtrar por rol</mat-label>
+      <mat-select [(ngModel)]="selectedRole" (selectionChange)="filterUsers()">
+        <mat-option value="">Todos los roles</mat-option>
+        <mat-option *ngFor="let role of availableRoles" [value]="role.id">
+          {{ role.name }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>filter_list</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- Lista de usuarios disponibles -->
+  <div *ngIf="!isLoading" class="users-section">
+    <h3 class="section-title">
+      <mat-icon>people</mat-icon>
+      Usuarios Disponibles ({{ filteredUsers.length }})
+    </h3>
+
+    <!-- Lista de usuarios -->
+    <div class="users-list" *ngIf="filteredUsers.length > 0">
+      <mat-selection-list [(ngModel)]="selectedUsers" class="users-selection-list">
+        <mat-list-option 
+          *ngFor="let user of filteredUsers; trackBy: trackByUserId" 
+          [value]="user"
+          [disabled]="isUserAlreadyAssigned(user.id)"
+          class="user-item">
+          
+          <div class="user-content">
+            <div class="user-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
+            
+            <div class="user-info">
+              <div class="user-name">{{ user.nombre }}</div>
+              <div class="user-email">{{ user.email }}</div>
+              <div class="user-role" *ngIf="user.rol_name">
+                <mat-chip class="role-chip">{{ user.rol_name }}</mat-chip>
+              </div>
+            </div>
+            
+            <div class="user-status" *ngIf="isUserAlreadyAssigned(user.id)">
+              <mat-chip class="assigned-chip">
+                <mat-icon matChipTrailingIcon>check_circle</mat-icon>
+                Ya asignado
+              </mat-chip>
+            </div>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+
+    <!-- Estado sin usuarios -->
+    <div *ngIf="filteredUsers.length === 0 && availableUsers.length > 0" class="no-results">
+      <mat-icon class="no-results-icon">search_off</mat-icon>
+      <p>No se encontraron usuarios con los filtros aplicados</p>
+      <button mat-stroked-button (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar Filtros
+      </button>
+    </div>
+
+    <!-- Estado sin usuarios disponibles -->
+    <div *ngIf="availableUsers.length === 0" class="empty-users">
+      <mat-icon class="empty-icon">person_off</mat-icon>
+      <p>No hay usuarios disponibles para asignar</p>
+    </div>
+  </div>
+
+  <!-- Usuarios seleccionados para asignar -->
+  <div *ngIf="selectedUsers.length > 0" class="selected-section">
+    <h3 class="section-title">
+      <mat-icon>group_add</mat-icon>
+      Usuarios Seleccionados ({{ selectedUsers.length }})
+    </h3>
+    
+    <div class="selected-users">
+      <mat-chip-listbox class="selected-chips">
+        <mat-chip-option 
+          *ngFor="let user of selectedUsers; trackBy: trackByUserId"
+          (removed)="removeSelectedUser(user)"
+          class="selected-chip">
+          <mat-icon matChipAvatar>person</mat-icon>
+          {{ user.nombre }}
+          <mat-icon matChipTrailingIcon>cancel</mat-icon>
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+  </div>
+
+  <!-- Usuarios ya asignados al proyecto -->
+  <div *ngIf="assignedUsers.length > 0" class="assigned-section">
+    <h3 class="section-title">
+      <mat-icon>group</mat-icon>
+      Usuarios Ya Asignados ({{ assignedUsers.length }})
+    </h3>
+    
+    <div class="assigned-users">
+      <mat-list class="assigned-list">
+        <mat-list-item *ngFor="let user of assignedUsers; trackBy: trackByUserId" class="assigned-item">
+          <div class="user-content">
+            <div class="user-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
+            
+            <div class="user-info">
+              <div class="user-name">{{ user.nombre }}</div>
+              <div class="user-email">{{ user.email }}</div>
+            </div>
+            
+            <div class="user-actions">
+              <button mat-icon-button 
+                      (click)="removeUserFromProject(user)"
+                      color="warn"
+                      [disabled]="isRemoving"
+                      matTooltip="Remover del proyecto">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions class="modal-actions">
+  <button mat-stroked-button 
+          mat-dialog-close 
+          class="cancel-button"
+          [disabled]="isLoading || isAssigning">
+    <mat-icon>cancel</mat-icon>
+    Cancelar
+  </button>
+  
+  <button mat-raised-button 
+          color="primary" 
+          (click)="assignSelectedUsers()"
+          [disabled]="selectedUsers.length === 0 || isAssigning"
+          class="assign-button">
+    <mat-icon>{{ isAssigning ? '' : 'group_add' }}</mat-icon>
+    <mat-spinner *ngIf="isAssigning" diameter="20"></mat-spinner>
+    {{ isAssigning ? 'Asignando...' : 'Asignar Usuarios (' + selectedUsers.length + ')' }}
+  </button>
+</mat-dialog-actions>

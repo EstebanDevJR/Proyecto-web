@@ -1,0 +1,152 @@
+.main-layout {
+  display: block;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  .header-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    z-index: 1001;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar-container {
+    position: fixed;
+    left: 0;
+    top: 64px; // Start below the header
+    bottom: 0;
+    width: 260px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    
+    &.collapsed {
+      width: 70px;
+    }
+    
+    &.expanded {
+      width: 260px;
+    }
+  }
+
+  .main-content {
+    margin-top: 64px; // Space for fixed header
+    margin-left: 260px; // Space for sidebar
+    transition: margin-left 0.3s ease;
+    min-height: calc(100vh - 64px);
+    
+    &.sidebar-collapsed {
+      margin-left: 70px;
+    }
+
+    .content-container {
+      padding: 0; // Remove padding since pages handle their own spacing
+      background-color: #f8f9fa;
+      min-height: calc(100vh - 64px);
+      
+      .page-content {
+        width: 100%;
+        margin: 0;
+        background: transparent; // Let pages control their own background
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0; // Remove padding, let pages handle it
+        min-height: calc(100vh - 64px);
+      }
+    }
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .main-layout {
+    .sidebar-container {
+      transform: translateX(-100%);
+      
+      &.mobile-open {
+        transform: translateX(0);
+      }
+    }
+
+    .main-content {
+      margin-left: 0;
+      
+      &.sidebar-collapsed {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+// Overlay for mobile sidebar
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// Loading state
+.loading-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  .loading-content {
+    text-align: center;
+    color: white;
+    
+    .loading-spinner {
+      margin-bottom: 24px;
+      
+      ::ng-deep .mat-mdc-progress-spinner {
+        --mdc-circular-progress-active-indicator-color: white;
+      }
+    }
+    
+    .loading-text {
+      font-size: 18px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+  }
+}
+
+// Smooth transitions
+* {
+  transition: margin-left 0.3s ease, transform 0.3s ease;
+}
+
+// Dark theme support
+.dark-theme {
+  .main-layout {
+    background-color: #1a1a1a;
+    
+    .main-content {
+      .content-container {
+        background-color: #1a1a1a;
+        
+        .page-content {
+          background-color: #2d3748;
+          color: #f7fafc;
+        }
+      }
+    }
+  }
+} 

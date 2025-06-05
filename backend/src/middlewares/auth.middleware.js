@@ -32,7 +32,10 @@ const checkRole = (roles) => {
     return (req, res, next) => {
         const {rol_id} = req.user;
 
-        if (!roles.includes(rol_id)) {
+        // Asegurar que roles sea un array
+        const allowedRoles = Array.isArray(roles) ? roles : [roles];
+
+        if (!allowedRoles.includes(rol_id)) {
             return res.status(403).json({ message: 'Acceso denegado, no tienes permiso para realizar esta acción' });
         }
         next();

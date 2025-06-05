@@ -18,13 +18,20 @@ export class JwtInterceptor implements HttpInterceptor {
     // Obtiene el token JWT del sessionStorage
     const token = sessionStorage.getItem('accessToken');
 
+    console.log('🔌 Interceptor JWT - URL:', req.url);
+    console.log('🔑 Interceptor JWT - Token presente:', !!token);
+
     // Si existe un token, clona la petición y añade el header Authorization
     if (token) {
+      console.log('🔑 Interceptor JWT - Agregando token al header');
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`  // Añade el token al header
         }
       });
+      console.log('📤 Interceptor JWT - Headers:', req.headers.keys());
+    } else {
+      console.log('⚠️ Interceptor JWT - No hay token disponible');
     }
 
     // Pasa la petición (modificada o no) al siguiente handler

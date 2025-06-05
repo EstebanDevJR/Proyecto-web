@@ -6,13 +6,15 @@ const UserProject = require('./userProject.model');
 // Definición de la relación muchos a muchos entre Usuario y Proyecto
 User.belongsToMany(Project, {
     through: UserProject,
-    foreignKey: 'user_id',
+    foreignKey: 'usuario_id',
+    otherKey: 'proyecto_id',
     as: 'proyectos'
 });
 
 Project.belongsToMany(User, {
     through: UserProject,
     foreignKey: 'proyecto_id',
+    otherKey: 'usuario_id',
     as: 'usuarios'
 });
 

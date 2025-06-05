@@ -21,10 +21,10 @@ const User = sequelize.define('usuarios', {
             key: 'id'
         }
     },
-    // ID del administrador: entero, no puede ser nulo, referencia a la misma tabla usuarios
+    // ID del administrador: entero, puede ser nulo temporalmente, referencia a la misma tabla usuarios
     administrador_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true, // Permitir null para administradores que se auto-referencian
         references: {
             model: 'usuarios',
             key: 'id'

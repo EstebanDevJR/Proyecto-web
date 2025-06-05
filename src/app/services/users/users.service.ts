@@ -10,8 +10,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService {
-  // Almacena la URL base para los endpoints de la API
-  urlBaseServices: string = URL_SERVICIOS;
+  // Almacena la URL base para los endpoints de la API con el prefijo correcto
+  urlBaseServices: string = `${URL_SERVICIOS}/api/v1`;
 
   // Constructor con inyección de dependencia del HttpClient
   constructor(private readonly http: HttpClient) { }

@@ -1,1 +1,248 @@
-<p>projects works!</p>
+<div class="projects-page">
+<!-- Header de la página -->
+<div class="page-header">
+  <div class="header-content">
+    <div class="title-section">
+      <h1 class="page-title">
+        <mat-icon class="title-icon">folder</mat-icon>
+        Gestión de Proyectos
+      </h1>
+      <p class="page-description">
+        Administra y supervisa todos los proyectos de la organización
+      </p>
+    </div>
+    
+    <div class="actions-section">
+      <button mat-raised-button 
+              color="primary" 
+              (click)="openCreateProjectModal()"
+              class="create-button">
+        <mat-icon>add</mat-icon>
+        Nuevo Proyecto
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sección de filtros y búsqueda -->
+<div class="filters-section">
+  <mat-card class="filters-card">
+    <div class="filters-content">
+      <!-- Barra de búsqueda -->
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar proyectos</mat-label>
+        <input matInput 
+               [(ngModel)]="searchTerm"
+               (input)="applyFilter()"
+               placeholder="Nombre, descripción o administrador..."
+               maxlength="100">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Filtro por administrador -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filtrar por Administrador</mat-label>
+        <mat-select [(ngModel)]="selectedAdmin" 
+                    (selectionChange)="applyFilter()">
+          <mat-option value="">Todos los administradores</mat-option>
+          <mat-option *ngFor="let admin of administrators" [value]="admin.id">
+            {{ admin.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <!-- Botón para limpiar filtros -->
+      <button mat-stroked-button 
+              (click)="clearFilters()"
+              class="clear-filters-btn"
+              [disabled]="!hasActiveFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Estadísticas rápidas -->
+<div class="stats-section" *ngIf="!isLoading">
+  <div class="stats-grid">
+    <mat-card class="stat-card total">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>folder</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ totalProjects }}</span>
+          <span class="stat-label">Total Proyectos</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card active">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ activeProjects }}</span>
+          <span class="stat-label">Proyectos Activos</span>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card users">
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>group</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ totalUsers }}</span>
+          <span class="stat-label">Usuarios Asignados</span>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Contenido principal -->
+<div class="content-section">
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando proyectos...</p>
+  </div>
+
+  <!-- Lista de proyectos -->
+  <div *ngIf="!isLoading && filteredProjects.length > 0" class="projects-grid">
+    <mat-card *ngFor="let project of filteredProjects; trackBy: trackByProjectId" 
+              class="project-card">
+      <!-- Header de la tarjeta -->
+      <mat-card-header class="project-header">
+        <div mat-card-avatar class="project-avatar">
+          <mat-icon>folder_open</mat-icon>
+        </div>
+        <mat-card-title class="project-title">{{ project.nombre }}</mat-card-title>
+        <mat-card-subtitle class="project-subtitle">
+          Administrador: {{ project.administrador?.nombre || 'Sin asignar' }}
+        </mat-card-subtitle>
+        
+        <!-- Menú de acciones -->
+        <div class="card-actions">
+          <button mat-icon-button [matMenuTriggerFor]="projectMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #projectMenu="matMenu">
+            <button mat-menu-item (click)="viewProject(project)">
+              <mat-icon>visibility</mat-icon>
+              Ver Detalles
+            </button>
+            <button mat-menu-item (click)="editProject(project)">
+              <mat-icon>edit</mat-icon>
+              Editar
+            </button>
+            <button mat-menu-item (click)="assignUsers(project)">
+              <mat-icon>group_add</mat-icon>
+              Asignar Usuarios
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="deleteProject(project)" class="delete-action">
+              <mat-icon>delete</mat-icon>
+              Eliminar
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-header>
+
+      <!-- Contenido de la tarjeta -->
+      <mat-card-content class="project-content">
+        <p class="project-description">{{ project.descripcion }}</p>
+        
+        <!-- Información adicional -->
+        <div class="project-info">
+          <div class="info-item">
+            <mat-icon class="info-icon">schedule</mat-icon>
+            <span>{{ formatDate(project.fecha_creacion) }}</span>
+          </div>
+          <div class="info-item" *ngIf="project.usuarios && project.usuarios.length > 0">
+            <mat-icon class="info-icon">group</mat-icon>
+            <span>{{ project.usuarios.length }} usuario(s)</span>
+          </div>
+        </div>
+
+        <!-- Lista de usuarios asignados -->
+        <div *ngIf="project.usuarios && project.usuarios.length > 0" class="users-section">
+          <h4 class="users-title">Usuarios Asignados:</h4>
+          <div class="users-list">
+            <mat-chip-listbox class="users-chips">
+              <mat-chip-option *ngFor="let user of project.usuarios.slice(0, 3)" 
+                               class="user-chip">
+                <mat-icon matChipAvatar>person</mat-icon>
+                {{ user.nombre }}
+              </mat-chip-option>
+              <mat-chip-option *ngIf="project.usuarios.length > 3" 
+                               class="more-users-chip">
+                +{{ project.usuarios.length - 3 }} más
+              </mat-chip-option>
+            </mat-chip-listbox>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <!-- Acciones de la tarjeta -->
+      <mat-card-actions class="project-actions">
+        <button mat-button (click)="viewProject(project)" color="primary">
+          <mat-icon>visibility</mat-icon>
+          Ver Detalles
+        </button>
+        <button mat-button (click)="editProject(project)">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Estado vacío - Sin proyectos -->
+  <div *ngIf="!isLoading && filteredProjects.length === 0 && projects.length === 0" 
+       class="empty-state">
+    <div class="empty-content">
+      <mat-icon class="empty-icon">folder_off</mat-icon>
+      <h2>No hay proyectos</h2>
+      <p>Aún no se han creado proyectos. ¡Comienza creando el primer proyecto!</p>
+      <button mat-raised-button 
+              color="primary" 
+              (click)="openCreateProjectModal()"
+              class="empty-action">
+        <mat-icon>add</mat-icon>
+        Crear Primer Proyecto
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado vacío - Filtros sin resultados -->
+  <div *ngIf="!isLoading && filteredProjects.length === 0 && projects.length > 0" 
+       class="no-results-state">
+    <div class="no-results-content">
+      <mat-icon class="no-results-icon">search_off</mat-icon>
+      <h3>No se encontraron proyectos</h3>
+      <p>No hay proyectos que coincidan con los filtros aplicados.</p>
+      <button mat-stroked-button (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar Filtros
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Paginación (para implementación futura) -->
+<div *ngIf="!isLoading && filteredProjects.length > 0" class="pagination-section">
+  <mat-paginator [length]="totalProjects"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="[5, 10, 25, 50]"
+                 (page)="onPageChange($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+</div>
+
+</div> <!-- Cierre del contenedor projects-page -->

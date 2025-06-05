@@ -1,6 +1,20 @@
-<app-header></app-header>
-<app-sidebar></app-sidebar>
-<!-- <app-right-sidebar></app-right-sidebar> -->
-<div [dir]="direction">
-  <router-outlet></router-outlet>
+<div class="main-layout">
+  <!-- Header fijo -->
+  <div class="header-container">
+    <app-header></app-header>
+  </div>
+
+  <!-- Sidebar fijo -->
+  <div class="sidebar-container">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <!-- Contenido principal con márgenes apropiados -->
+  <div class="main-content">
+    <div class="content-container" [dir]="direction">
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
 </div>

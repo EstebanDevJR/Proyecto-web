@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 // Servicio para crear un nuevo usuario
 exports.createUser = async (nombre, email, password, rol_id, administrador_id) => {
     try {
+
         // Verificar si el usuario ya existe
         const userExists = await User.findOne({ where: { email } });
         if (userExists) {
@@ -20,7 +21,7 @@ exports.createUser = async (nombre, email, password, rol_id, administrador_id) =
             email,
             password: hashedPassword,
             rol_id,
-            administrador_id
+            administrador_id: administrador_id || null // Usar el administrador_id proporcionado o null
         });
 
         return newUser;
@@ -34,13 +35,36 @@ exports.createUser = async (nombre, email, password, rol_id, administrador_id) =
 // Servicio para obtener usuarios por ID de administrador
 exports.getAllUsersByAdministadorId = async (administrador_id, email) => {
     try {
+        const { Op } = require('sequelize');
+        
         // Construir cláusula where dinámica
-        const whereClause = { administrador_id };
+        let whereClause = {};
+        
+        // Los administradores pueden ver:
+        // 1. Todos los usuarios normales del sistema (para gestión general)
+        // 2. Otros administradores del sistema (para colaboración)
+        // 3. No se incluyen a sí mismos
+        whereClause = {
+            id: { [Op.ne]: administrador_id } // Solo excluir al administrador actual
+        };
+        
+        // Aplicar filtro de email si se proporciona
         if (email) {
-            whereClause.email = email;
+            whereClause = {
+                [Op.and]: [
+                    whereClause,
+                    { email: { [Op.like]: `%${email}%` } }
+                ]
+            };
         }
+        
         // Obtener usuarios excluyendo el campo password
-        const users = await User.findAll({where: whereClause, attributes: { exclude: ['password'] }});
+        const users = await User.findAll({
+            where: whereClause, 
+            attributes: { exclude: ['password'] },
+            order: [['rol_id', 'ASC'], ['id', 'DESC']] // Administradores primero, luego por más recientes
+        });
+        
         return users;
     }
     catch (err) {

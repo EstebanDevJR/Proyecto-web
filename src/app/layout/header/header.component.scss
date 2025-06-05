@@ -1,0 +1,194 @@
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 64px;
+    max-width: 100%;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .menu-toggle {
+      color: white;
+      border: none;
+      background: none;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .logo-icon {
+        font-size: 32px;
+        color: #ffd700;
+      }
+      
+      .app-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 0;
+        
+        @media (max-width: 768px) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      border-radius: 24px;
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        mat-icon {
+          font-size: 20px;
+          color: white;
+        }
+      }
+
+      .user-details {
+        display: flex;
+        flex-direction: column;
+        
+        @media (max-width: 768px) {
+          display: none;
+        }
+
+        .user-name {
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .user-role {
+          font-size: 0.75rem;
+          opacity: 0.8;
+          margin: 0;
+          line-height: 1.2;
+        }
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .action-button {
+        color: white;
+        background: none;
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          transform: scale(1.1);
+        }
+        
+        mat-icon {
+          font-size: 20px;
+        }
+      }
+
+      .logout-button {
+        background-color: rgba(244, 67, 54, 0.2);
+        border: 1px solid rgba(244, 67, 54, 0.3);
+        
+        &:hover {
+          background-color: rgba(244, 67, 54, 0.3);
+          border-color: rgba(244, 67, 54, 0.5);
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .header {
+    .header-container {
+      padding: 0 16px;
+    }
+    
+    .header-right {
+      gap: 8px;
+      
+      .user-info {
+        padding: 6px 12px;
+      }
+    }
+  }
+}
+
+// Dark theme support
+.dark-theme {
+  .header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  }
+}
+
+// Animation for the header
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header {
+  animation: slideDown 0.3s ease-out;
+}

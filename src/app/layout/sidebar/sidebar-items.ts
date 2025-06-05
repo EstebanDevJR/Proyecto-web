@@ -19,19 +19,19 @@ export const ROUTES: RouteInfo[] = [
     path: '/page/projects',
     title: 'Gestión de proyectos',
     iconType: 'material-icons-outlined',
-    icon: 'assessment',
+    icon: 'folder',
     class: '',
     groupTitle: false,
     badge: '',
     badgeClass: '',
     submenu: [],
-    rolAuthority: [ROLES.ADMIN] // Solo admin
+    rolAuthority: [ROLES.ADMIN] // Solo admin puede gestionar todos los proyectos
   },  
   {
     path: '/page/users',
     title: 'Gestión de usuarios',
     iconType: 'material-icons-outlined',
-    icon: 'assessment',
+    icon: 'people',
     class: '',
     groupTitle: false,
     badge: '',
@@ -40,15 +40,15 @@ export const ROUTES: RouteInfo[] = [
     rolAuthority: [ROLES.ADMIN] // Solo admin
   },
   {
-    path: '/page/projects',
+    path: '/page/my-projects',
     title: 'Mis proyectos',
     iconType: 'material-icons-outlined',
-    icon: 'assessment',
+    icon: 'assignment',
     class: '',
     groupTitle: false,
     badge: '',
     badgeClass: '',
     submenu: [],
-    rolAuthority: [ROLES.USER] // Solo usuario normal
-  },  
+    rolAuthority: [ROLES.USER] // Solo usuarios normales
+  }
 ];
