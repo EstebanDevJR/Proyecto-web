@@ -4,17 +4,23 @@
     <app-header></app-header>
   </div>
 
-  <!-- Sidebar fijo -->
-  <div class="sidebar-container">
-    <app-sidebar></app-sidebar>
-  </div>
+  <!-- Contenedor del sidebar y contenido principal -->
+  <div class="content-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar-container">
+      <app-sidebar></app-sidebar>
+    </div>
 
-  <!-- Contenido principal con márgenes apropiados -->
-  <div class="main-content">
-    <div class="content-container" [dir]="direction">
-      <div class="page-content">
-        <router-outlet></router-outlet>
+    <!-- Contenido principal -->
+    <div class="main-content">
+      <div class="content-container" [dir]="direction">
+        <div class="page-content">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Overlay para móviles -->
+  <div class="mobile-overlay" [class.active]="false"></div>
 </div>

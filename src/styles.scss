@@ -438,6 +438,63 @@ a {
   }
 }
 
+// Layout fixes - Override any conflicting global styles
+body {
+  // Remove any sidebar-related classes that interfere with layout
+  &.side-closed,
+  &.submenu-closed,
+  &.side-closed-hover,
+  &.ls-closed,
+  &.overlay-open {
+    // Ensure our layout components are not affected
+    app-main-layout {
+      .content-wrapper {
+        .sidebar-container {
+          width: 260px !important;
+          transform: none !important;
+          position: relative !important;
+          transition: none !important;
+        }
+        
+        .main-content {
+          margin-left: 0 !important;
+          transform: none !important;
+        }
+      }
+    }
+  }
+}
+
+// Override any Material Design or other global styles that affect layout
+.mat-drawer-container,
+.mat-sidenav-container {
+  transform: none !important;
+  transition: none !important;
+}
+
+// Ensure fixed layout components work correctly
+app-main-layout {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  
+  .main-layout {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    
+    .content-wrapper {
+      .sidebar-container,
+      .main-content {
+        position: relative !important;
+        transform: none !important;
+        transition: none !important;
+      }
+    }
+  }
+}
+
 // Print styles
 @media print {
   .no-print {

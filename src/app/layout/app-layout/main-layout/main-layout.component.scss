@@ -1,7 +1,9 @@
 .main-layout {
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background-color: #f8f9fa;
+  overflow: hidden;
 
   .header-container {
     position: fixed;
@@ -14,47 +16,49 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .sidebar-container {
-    position: fixed;
-    left: 0;
-    top: 64px; // Start below the header
-    bottom: 0;
-    width: 260px;
-    z-index: 1000;
-    transition: all 0.3s ease;
-    
-    &.collapsed {
-      width: 70px;
-    }
-    
-    &.expanded {
+  .content-wrapper {
+    display: flex;
+    margin-top: 64px;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+
+    .sidebar-container {
       width: 260px;
-    }
-  }
-
-  .main-content {
-    margin-top: 64px; // Space for fixed header
-    margin-left: 260px; // Space for sidebar
-    transition: margin-left 0.3s ease;
-    min-height: calc(100vh - 64px);
-    
-    &.sidebar-collapsed {
-      margin-left: 70px;
-    }
-
-    .content-container {
-      padding: 0; // Remove padding since pages handle their own spacing
-      background-color: #f8f9fa;
-      min-height: calc(100vh - 64px);
+      height: 100%;
+      flex-shrink: 0;
+      background: white;
+      border-right: 1px solid #dee2e6;
+      overflow: hidden;
       
-      .page-content {
-        width: 100%;
-        margin: 0;
-        background: transparent; // Let pages control their own background
-        border-radius: 0;
-        box-shadow: none;
-        padding: 0; // Remove padding, let pages handle it
-        min-height: calc(100vh - 64px);
+      // Prevent any global classes from affecting positioning
+      position: relative !important;
+      transform: none !important;
+      transition: none !important;
+      margin: 0 !important;
+      left: 0 !important;
+    }
+
+    .main-content {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background-color: #f8f9fa;
+      
+      .content-container {
+        height: 100%;
+        background-color: #f8f9fa;
+        
+        .page-content {
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          border-radius: 0;
+          box-shadow: none;
+          padding: 20px;
+          margin: 0;
+          overflow-y: auto;
+        }
       }
     }
   }
@@ -63,31 +67,36 @@
 // Mobile responsive
 @media (max-width: 768px) {
   .main-layout {
-    .sidebar-container {
-      transform: translateX(-100%);
-      
-      &.mobile-open {
-        transform: translateX(0);
+    .content-wrapper {
+      .sidebar-container {
+        position: fixed;
+        left: 0;
+        top: 64px;
+        height: calc(100vh - 64px);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        
+        &.mobile-open {
+          transform: translateX(0);
+        }
       }
-    }
 
-    .main-content {
-      margin-left: 0;
-      
-      &.sidebar-collapsed {
+      .main-content {
+        width: 100%;
         margin-left: 0;
       }
     }
   }
 }
 
-// Overlay for mobile sidebar
+// Mobile overlay
 .mobile-overlay {
   position: fixed;
-  top: 0;
+  top: 64px;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 64px);
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
   opacity: 0;
@@ -138,13 +147,55 @@
   .main-layout {
     background-color: #1a1a1a;
     
-    .main-content {
-      .content-container {
+    .content-wrapper {
+      .sidebar-container {
+        background: #2c3e50;
+        border-right-color: #495057;
+      }
+      
+      .main-content {
         background-color: #1a1a1a;
         
-        .page-content {
-          background-color: #2d3748;
-          color: #f7fafc;
+        .content-container {
+          background-color: #1a1a1a;
+          
+          .page-content {
+            background-color: #2d3748;
+            color: #f7fafc;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Override any global CSS that might interfere
+:host ::ng-deep {
+  .main-layout,
+  .content-wrapper,
+  .sidebar-container,
+  .main-content {
+    position: relative !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  // Remove any body classes that interfere with layout
+  body {
+    &.side-closed,
+    &.submenu-closed,
+    &.side-closed-hover,
+    &.ls-closed {
+      .main-layout {
+        .content-wrapper {
+          .sidebar-container {
+            width: 260px !important;
+            transform: none !important;
+          }
+          
+          .main-content {
+            margin-left: 0 !important;
+          }
         }
       }
     }

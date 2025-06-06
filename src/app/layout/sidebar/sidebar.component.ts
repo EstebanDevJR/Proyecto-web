@@ -11,7 +11,6 @@ import {
   ElementRef,
   OnInit,
   Renderer2,
-  HostListener,
 } from '@angular/core';
 import { ROUTES } from './sidebar-items';
 import { AuthService } from '@core';
@@ -40,10 +39,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 export class SidebarComponent extends UnsubscribeOnDestroyAdapter implements OnInit {
   public sidebarItems!: RouteInfo[]; // Items del menú filtrados por rol
-  public innerHeight?: number; // Altura de la ventana
-  public bodyTag!: HTMLElement; // Referencia al body
-  listMaxHeight?: string; // Altura máxima de la lista
-  listMaxWidth?: string; // Ancho máximo de la lista
   userLogged: string | undefined = ''; // Nombre del usuario
 
   constructor(
@@ -55,27 +50,12 @@ export class SidebarComponent extends UnsubscribeOnDestroyAdapter implements OnI
     private readonly _domSanitizer: DomSanitizer
   ) {
     super();
-    // Cierra el sidebar al navegar (en móviles)
+    // Cierra el sidebar al navegar (solo en móviles)
     this.subs.sink = this._router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
+      if (event instanceof NavigationEnd && window.innerWidth < 768) {
         this._renderer.removeClass(this._document.body, 'overlay-open');
       }
     });
-  }
-
-  // Maneja el redimensionamiento de la ventana
-  @HostListener('window:resize', ['$event'])
-  windowResizecall() {
-    this.setMenuHeight();
-    this.checkStatuForResize(false);
-  }
-
-  // Cierra el sidebar al hacer click fuera
-  @HostListener('document:mousedown', ['$event'])
-  onGlobalClick(event: Event): void {
-    if (!this._elementRef.nativeElement.contains(event.target)) {
-      this._renderer.removeClass(this._document.body, 'overlay-open');
-    }
   }
 
   // Alternar menús desplegables
@@ -102,50 +82,10 @@ export class SidebarComponent extends UnsubscribeOnDestroyAdapter implements OnI
     // Filtra rutas por rol del usuario
     const rolAuthority = this._authService.getAuthFromSessionStorage().rol_id;
     this.sidebarItems = ROUTES.filter(item => item?.rolAuthority.includes(rolAuthority));
-    this.initLeftSidebar();
-    this.bodyTag = this._document.body;
-  }
-
-  // Inicializa el sidebar
-  initLeftSidebar() {
-    this.setMenuHeight();
-    this.checkStatuForResize(true);
-  }
-
-  // Calcula altura del menú
-  setMenuHeight() {
-    this.innerHeight = window.innerHeight;
-    const height = this.innerHeight - 60; // Resta altura del header
-    this.listMaxHeight = height + '';
-    this.listMaxWidth = '500px';
-  }
-
-  // Verifica estado responsive
-  checkStatuForResize(firstTime: boolean) {
-    if (window.innerWidth < 1025) {
-      this._renderer.addClass(this._document.body, 'ls-closed');
-    } else {
-      this._renderer.removeClass(this._document.body, 'ls-closed');
-    }
-  }
-
-  // Efectos hover - DISABLED to prevent sidebar movement
-  mouseHover() {
-    // Disabled to prevent sidebar following mouse
-    // const body = this._elementRef.nativeElement.closest('body');
-    // if (body.classList.contains('submenu-closed')) {
-    //   this._renderer.addClass(this._document.body, 'side-closed-hover');
-    //   this._renderer.removeClass(this._document.body, 'submenu-closed');
-    // }
-  }
-
-  mouseOut() {
-    // Disabled to prevent sidebar following mouse
-    // const body = this._elementRef.nativeElement.closest('body');
-    // if (body.classList.contains('side-closed-hover')) {
-    //   this._renderer.removeClass(this._document.body, 'side-closed-hover');
-    //   this._renderer.addClass(this._document.body, 'submenu-closed');
-    // }
+    
+    // Obtener información del usuario logueado
+    const userInfo = this._authService.getAuthFromSessionStorage();
+    this.userLogged = userInfo.username || 'Usuario';
   }
 
   // Helpers de validación

@@ -65,7 +65,6 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  // Colapsar/expandir menú lateral
   callSidemenuCollapse() {
     const hasClass = this.document.body.classList.contains('side-closed');
     if (hasClass) {

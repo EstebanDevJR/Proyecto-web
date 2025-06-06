@@ -11,7 +11,7 @@ import { UnsubscribeOnDestroyAdapter } from '@shared';
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
-  styleUrls: [],
+  styleUrls: ['./main-layout.component.scss'],
   standalone: true,
   imports: [
     HeaderComponent,
@@ -23,6 +23,7 @@ import { UnsubscribeOnDestroyAdapter } from '@shared';
 export class MainLayoutComponent extends UnsubscribeOnDestroyAdapter implements AfterViewInit {
   direction!: Direction;
   public config!: InConfiguration;
+  
   constructor(
     private configService: ConfigService,
     @Inject(DOCUMENT) private document: Document,
@@ -31,78 +32,23 @@ export class MainLayoutComponent extends UnsubscribeOnDestroyAdapter implements 
     super();
     this.config = this.configService.configData;
   }
+
   ngAfterViewInit(): void {
-    //------------ set varient start----------------
-    if (localStorage.getItem('theme')) {
-      this.renderer.removeClass(this.document.body, this.config.layout.variant);
-      this.renderer.addClass(
-        this.document.body,
-        localStorage.getItem('theme') as string
-      );
+    // Set direction based on config
+    this.direction = this.config.layout.rtl ? 'rtl' : 'ltr';
+    
+    if (this.config.layout.rtl) {
+      this.setRTLSettings();
     } else {
-      this.renderer.addClass(this.document.body, this.config.layout.variant);
-      localStorage.setItem('theme', this.config.layout.variant);
+      this.setLTRSettings();
     }
 
-    //------------ set varient end----------------
+    // Set theme configurations (only non-layout affecting ones)
+    this.setThemeConfigurations();
+  }
 
-    //------------ set theme start----------------
-
-    if (localStorage.getItem('choose_skin')) {
-      //console.log("ENTRO PORQUE EXISTE CLASE");
-      this.renderer.removeClass(
-        this.document.body,
-        'theme-' + this.config.layout.theme_color
-      );
-
-      this.renderer.addClass(
-        this.document.body,
-        localStorage.getItem('choose_skin') as string
-      );
-      localStorage.setItem(
-        'choose_skin_active',
-        (localStorage.getItem('choose_skin') as string).substring(6)
-      );
-    } else {
-      //console.log("ENTRO PORQUE NO EXISTE CLASE");
-      //console.log(this.config);
-      
-      this.renderer.addClass(
-        this.document.body,
-        'theme-' + this.config.layout.theme_color
-      );
-
-      localStorage.setItem(
-        'choose_skin',
-        'theme-' + this.config.layout.theme_color
-      );
-      localStorage.setItem(
-        'choose_skin_active',
-        this.config.layout.theme_color
-      );
-    }
-
-    //------------ set theme end----------------
-
-    //------------ set RTL start----------------
-
-    if (localStorage.getItem('isRtl')) {
-      if (localStorage.getItem('isRtl') === 'true') {
-        this.setRTLSettings();
-      } else if (localStorage.getItem('isRtl') === 'false') {
-        this.setLTRSettings();
-      }
-    } else {
-      if (this.config.layout.rtl == true) {
-        this.setRTLSettings();
-      } else {
-        this.setLTRSettings();
-      }
-    }
-    //------------ set RTL end----------------
-
-    //------------ set sidebar color start----------------
-
+  private setThemeConfigurations() {
+    // Set sidebar color (visual only, not layout affecting)
     if (localStorage.getItem('menuOption')) {
       this.renderer.addClass(
         this.document.body,
@@ -119,10 +65,7 @@ export class MainLayoutComponent extends UnsubscribeOnDestroyAdapter implements 
       );
     }
 
-    //------------ set sidebar color end----------------
-
-    //------------ set logo color start----------------
-
+    // Set logo color
     if (localStorage.getItem('choose_logoheader')) {
       this.renderer.addClass(
         this.document.body,
@@ -134,40 +77,17 @@ export class MainLayoutComponent extends UnsubscribeOnDestroyAdapter implements 
         'logo-' + this.config.layout.logo_bg_color
       );
     }
-
-    //------------ set logo color end----------------
-
-    //------------ set sidebar collapse start----------------
-    if (localStorage.getItem('collapsed_menu')) {
-      if (localStorage.getItem('collapsed_menu') === 'true') {
-        this.renderer.addClass(this.document.body, 'side-closed');
-        this.renderer.addClass(this.document.body, 'submenu-closed');
-      }
-    } else {
-      if (this.config.layout.sidebar.collapsed == true) {
-        this.renderer.addClass(this.document.body, 'side-closed');
-        this.renderer.addClass(this.document.body, 'submenu-closed');
-        localStorage.setItem('collapsed_menu', 'true');
-      } else {
-        this.renderer.removeClass(this.document.body, 'side-closed');
-        this.renderer.removeClass(this.document.body, 'submenu-closed');
-        localStorage.setItem('collapsed_menu', 'false');
-      }
-    }
-
-    //------------ set sidebar collapse end----------------
   }
 
   setRTLSettings() {
     document.getElementsByTagName('html')[0].setAttribute('dir', 'rtl');
     this.renderer.addClass(this.document.body, 'rtl');
-
     localStorage.setItem('isRtl', 'true');
   }
+  
   setLTRSettings() {
     document.getElementsByTagName('html')[0].removeAttribute('dir');
     this.renderer.removeClass(this.document.body, 'rtl');
-
     localStorage.setItem('isRtl', 'false');
   }
 }
